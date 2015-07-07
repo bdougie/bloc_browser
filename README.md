@@ -1,3 +1,3 @@
-# bloc_browser
+# BlocBrowser
 
 Brian's first ios based browser app.
