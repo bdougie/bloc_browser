@@ -104,6 +104,8 @@
     
     NSString *trimmedString = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSString *query = nil;
+    NSUInteger periodCount = [URLString componentsSeparatedByString:@"."].count;
+    NSLog(@"period count is: %@", @(periodCount));
    
     NSRange whitespaceRange = [URLString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
     if (whitespaceRange.location != NSNotFound) {
@@ -114,16 +116,11 @@
         URLString = trimmedString;
     }
     
+    if (periodCount < 2 && !query) {
+        URLString = [NSString stringWithFormat:@"http://google.com/search?q=%@", trimmedString];
+    }
+    
     NSURL *URL = [NSURL URLWithString:URLString];
-    
-//    NSUInteger spaceCount = [URLString componentsSeparatedByString:@" "].count;
-//    NSUInteger periodCount = [URLString componentsSeparatedByString:@"."].count;
-    
-//    if (periodCount < 1 || spaceCount > 1) {
-//        NSLog(@"Found whitespace");
-//        NSString *query = [URLString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-//        URLString = [NSString stringWithFormat:@"http://google.com/search?q=%@", query];
-//    }
     
     if (!URL.scheme && !query) {
         URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
