@@ -120,7 +120,7 @@
         URLString = [NSString stringWithFormat:@"http://google.com/search?q=%@", trimmedString];
     }
     
-    NSURL *URL = [NSURL URLWithString:URLString];
+    NSURL *URL = [NSURL URLWithString:URLString];g
     
     if (!URL.scheme && !query) {
         URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
