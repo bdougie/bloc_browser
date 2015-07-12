@@ -102,17 +102,37 @@
     
     NSString *URLString = textField.text;
     
+    NSString *trimmedString = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString *query = nil;
+   
+    NSRange whitespaceRange = [URLString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (whitespaceRange.location != NSNotFound) {
+        query = [trimmedString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+        NSLog(@"query is: %@", query);
+        URLString = [NSString stringWithFormat:@"http://google.com/search?q=%@", query];
+    } else {
+        URLString = trimmedString;
+    }
+    
     NSURL *URL = [NSURL URLWithString:URLString];
     
-    if (!URL.scheme) {
-        NSArray *stringArray = [URLString componentsSeparatedByString:@" "];
-        NSString *urlString = [stringArray componentsJoinedByString:@"+"];
-        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://google.com/search?q=%@", urlString]];
+//    NSUInteger spaceCount = [URLString componentsSeparatedByString:@" "].count;
+//    NSUInteger periodCount = [URLString componentsSeparatedByString:@"."].count;
+    
+//    if (periodCount < 1 || spaceCount > 1) {
+//        NSLog(@"Found whitespace");
+//        NSString *query = [URLString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+//        URLString = [NSString stringWithFormat:@"http://google.com/search?q=%@", query];
+//    }
+    
+    if (!URL.scheme && !query) {
+        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
     }
     
     if (URL) {
         NSURLRequest *request = [NSURLRequest requestWithURL:URL];
         [self.webView loadRequest:request];
+        NSLog(@"request made");
     }
     
     return NO;
@@ -120,24 +140,16 @@
 
 #pragma mark - WKNavigationDelegate
 
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-    [self updateButtonsAndTitle];
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    [self updateButtonsAndTitle];
-}
-
 - (void)webView:(WKWebView *)webView didFailProvisionNavigation:(WKNavigation *) navigation withError:(NSError *)error {
     [self webView:webView didFailNavigation:navigation withError:error];
 }
 
-- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
     if (error.code != NSURLErrorCancelled) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", @"Error")
                                                                        message:[error localizedDescription]
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        
         
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                            style:UIAlertActionStyleCancel handler:nil];
@@ -147,6 +159,14 @@
         [self presentViewController:alert animated:YES completion:nil];
     }
     
+    [self updateButtonsAndTitle];
+}
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    [self updateButtonsAndTitle];
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     [self updateButtonsAndTitle];
 }
 
