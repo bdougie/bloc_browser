@@ -46,6 +46,11 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Welcome!", @"Welcome title")
+                                                    message:NSLocalizedString(@"You are about to be able browse the web!", @"Welcome comment")
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"I'm Ready Freddy!", @"Welcome button title") otherButtonTitles:nil];
+    [alert show];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
