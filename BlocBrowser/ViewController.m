@@ -203,9 +203,17 @@
     }
 }
 
-- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(UIPinchGestureRecognizer *)recognizer {
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToZoomWithScale:(UIPinchGestureRecognizer *)recognizer {
     
-     NSLog(@"pinching");
+    CGFloat scale = recognizer.scale;
+    NSLog(@"%f pinching", scale);
+    
+    CGRect newToolbarFrame = CGRectMake(toolbar.frame.origin.x, toolbar.frame.origin.y,
+                             toolbar.frame.size.width * scale, toolbar.frame.size.height * scale);
+    
+    if (CGRectContainsRect(self.view.bounds, newToolbarFrame)) {
+        toolbar.frame = newToolbarFrame;
+    }
     
 }
 

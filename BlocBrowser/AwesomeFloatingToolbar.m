@@ -140,7 +140,7 @@
     if (recognizer.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [recognizer translationInView:self];
         
-        NSLog(@"New translation: %@", NSStringFromCGPoint(translation));
+//        NSLog(@"New translation: %@", NSStringFromCGPoint(translation));
         
         if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToPanWithOffset:)]) {
             [self.delegate floatingToolbar:self didTryToPanWithOffset:translation];
@@ -151,7 +151,6 @@
 }
 
 - (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
-
     if (recognizer.state == UIGestureRecognizerStateChanged) {
         NSLog(@"Pinched!");
         if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToZoomWithScale:)]) {
