@@ -209,4 +209,10 @@
     
 }
 
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToLongPress:(UILongPressGestureRecognizer *)recognizer {
+    
+    NSLog(@"pressed");
+    
+}
+
 @end

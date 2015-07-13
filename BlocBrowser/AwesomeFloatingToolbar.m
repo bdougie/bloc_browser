@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
 
 @end
 
@@ -66,6 +67,8 @@
         [self addGestureRecognizer:self.panGesture];
         self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
         [self addGestureRecognizer:self.pinchGesture];
+        self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
+        [self addGestureRecognizer:self.longPressGesture];
     }
     
     return self;
@@ -96,7 +99,29 @@
     }
 }
 
-#pragma mark - Touch Handling
+- (void) rotateLabelcolors {
+    NSUInteger labelsCount = self.labels.count;
+    NSMutableArray *newBackgroundColorArrangement = [NSMutableArray arrayWithCapacity:labelsCount];
+    // loop to change label colors
+    for (NSUInteger i = 0; i < labelsCount; i++) {
+        if (i == (labelsCount - 1)) {
+            UIButton *btn = self.labels[0];
+            UIColor *color = btn.backgroundColor;
+            newBackgroundColorArrangement[i] =color;
+        } else {
+            UIButton *btn = self.labels[i + 1];
+            UIColor *color = btn.backgroundColor;
+            newBackgroundColorArrangement[i] = color;
+        }
+    }
+    // apply those changes
+    for (NSUInteger i = 0; i < labelsCount; i++) {
+        UIButton *btn = self.labels[i];
+        btn.backgroundColor = newBackgroundColorArrangement[i];
+    }
+}
+
+#pragma mark - Gesture Handling
 
 - (UILabel *) labelFromTouches:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
@@ -140,10 +165,19 @@
 - (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
 
     if (recognizer.state == UIGestureRecognizerStateChanged) {
+        NSLog(@"Pinched!");
         if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToZoomWithScale:)]) {
             [self.delegate floatingToolbar:self didTryToZoomWithScale:recognizer];
         }
 
+    }
+}
+
+- (void) longPressFired:(UILongPressGestureRecognizer *)recognizer {
+    NSLog(@"Long Press!");
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+         NSLog(@"Long let go!");
+        [self rotateLabelcolors];
     }
 }
 
