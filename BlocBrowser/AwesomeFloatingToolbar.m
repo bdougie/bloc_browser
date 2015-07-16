@@ -162,7 +162,7 @@
 
 - (void) longPressFired:(UILongPressGestureRecognizer *)recognizer {
     NSLog(@"Long Press!");
-    if (recognizer.state == UIGestureRecognizerStateEnded) {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
          NSLog(@"Long let go!");
         [self rotateLabelcolors];
     }
