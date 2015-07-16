@@ -71,7 +71,10 @@
     self.textField.frame = CGRectMake(0,0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
 
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
+    if (self.awesomeToolbar.frame.size.width == 0.0){
+        self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
+    }
+
 }
 
 #pragma mark - UITextFieldDelegate
@@ -172,6 +175,8 @@
     newWebView.navigationDelegate = self;
     [self.view addSubview:newWebView];
     
+    [self.view bringSubviewToFront:self.awesomeToolbar];
+    
     self.webView = newWebView;
     
     self.textField.text = nil;
@@ -191,4 +196,37 @@
         [self.webView reload];
     }
 }
+
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset {
+    CGPoint startingPoint = toolbar.frame.origin;
+    CGPoint newPoint = CGPointMake(startingPoint.x + offset.x, startingPoint.y + offset.y);
+    
+    CGRect potentialNewFrame = CGRectMake(newPoint.x, newPoint.y, CGRectGetWidth(toolbar.frame), CGRectGetHeight(toolbar.frame));
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+        toolbar.frame = potentialNewFrame;
+    }
+}
+
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToZoomWithScale:(UIPinchGestureRecognizer *)recognizer {
+    
+    CGFloat scale = recognizer.scale;
+    NSLog(@"%f pinching", scale);
+    
+
+    CGRect newToolbarFrame = CGRectMake(toolbar.frame.origin.x, toolbar.frame.origin.y,
+                             toolbar.frame.size.width * scale, toolbar.frame.size.height * scale);
+    
+    if (CGRectContainsRect(self.view.bounds, newToolbarFrame)) {
+        toolbar.frame = newToolbarFrame;
+    }
+    
+}
+
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToLongPress:(UILongPressGestureRecognizer *)recognizer {
+    
+    NSLog(@"pressed");
+    
+}
+
 @end
